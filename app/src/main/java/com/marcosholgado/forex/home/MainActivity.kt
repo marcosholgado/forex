@@ -1,5 +1,6 @@
 package com.marcosholgado.forex.home
 
+import com.marcosholgado.forex.R
 import android.os.Bundle
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders

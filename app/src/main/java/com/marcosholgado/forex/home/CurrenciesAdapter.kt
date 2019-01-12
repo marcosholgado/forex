@@ -1,5 +1,6 @@
 package com.marcosholgado.forex.home
 
+import com.marcosholgado.forex.R
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
