@@ -6,7 +6,7 @@ import javax.inject.Inject
 
 open class CurrencyEntityMapper @Inject constructor() {
 
-    fun mapFromRemote(pair: Pair<String, String>): CurrencyEntity {
+    open fun mapFromRemote(pair: Pair<String, String>): CurrencyEntity {
         return CurrencyEntity(pair.first, pair.second.toFloat())
     }
 

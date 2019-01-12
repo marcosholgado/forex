@@ -1,6 +1,6 @@
 package com.marcosholgado.data.mapper
 
-import com.google.common.truth.Truth
+import com.google.common.truth.Truth.assertThat
 import com.marcosholgado.data.model.CurrencyEntity
 import org.junit.Test
 
@@ -16,8 +16,8 @@ class CurrencyMapperTest {
         val currencyEntity = CurrencyEntity("EUR", 1.12345f)
         val currency = mapperTest.mapFromEntity(currencyEntity)
 
-        Truth.assertThat(currency.currency).isEqualTo(currencyEntity.currency)
-        Truth.assertThat(currency.rate).isEqualTo(currencyEntity.rate)
+        assertThat(currency.currency).isEqualTo(currencyEntity.currency)
+        assertThat(currency.rate).isEqualTo(currencyEntity.rate)
     }
 
 }
