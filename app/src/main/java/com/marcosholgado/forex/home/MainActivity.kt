@@ -2,6 +2,8 @@ package com.marcosholgado.forex.home
 
 import com.marcosholgado.forex.R
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -31,15 +33,34 @@ class MainActivity : DaggerAppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
-        getCurrenciesViewModel.getCurrencies().observe(this, Observer {
+        getCurrenciesViewModel.getCurrencies(value.text.toString().toFloat())
+            .observe(this, Observer {
             if (it != null) this.handleDataState(it)
         })
+
+        setupListeners()
         setupAdapter()
     }
 
     private fun setupAdapter() {
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.adapter = currenciesAdapter
+    }
+
+    private fun setupListeners() {
+        value.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(p0: Editable?) {
+            }
+
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+            }
+
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                if (!p0.toString().isEmpty()) {
+                    getCurrenciesViewModel.updateCurrenciesRate(p0.toString().toFloat())
+                }
+            }
+        })
     }
 
 

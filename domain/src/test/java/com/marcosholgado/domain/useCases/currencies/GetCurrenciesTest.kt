@@ -38,7 +38,7 @@ class GetCurrenciesTest {
     @Test
     fun createObservableCompletes() {
         stubGetCurrencies()
-        val testObserver = getCurrencies.createObservable().test()
+        val testObserver = getCurrencies.createObservable(1f).test()
         testObserver.assertComplete()
     }
 
@@ -46,7 +46,7 @@ class GetCurrenciesTest {
     fun createObservableReturnsCorrectData() {
         stubGetCurrencies()
         val currencyList = createCurrencyList()
-        val testObserver = getCurrencies.createObservable().test()
+        val testObserver = getCurrencies.createObservable(1f).test()
         testObserver.assertValues(currencyList)
     }
 

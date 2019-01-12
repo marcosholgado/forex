@@ -5,11 +5,14 @@ import com.google.common.truth.Truth.assertThat
 import com.marcosholgado.domain.useCases.currencies.GetCurrencies
 import com.marcosholgado.forex.mapper.CurrencyViewMapper
 import com.marcosholgado.domain.model.Currency
+import com.marcosholgado.domain.useCases.currencies.UpdateExchangeRate
 import com.marcosholgado.forex.home.model.CurrenciesViewModel
 import com.marcosholgado.forex.home.model.CurrencyView
 import com.nhaarman.mockitokotlin2.KArgumentCaptor
 import com.nhaarman.mockitokotlin2.any
+import com.nhaarman.mockitokotlin2.anyOrNull
 import com.nhaarman.mockitokotlin2.argumentCaptor
+import com.nhaarman.mockitokotlin2.eq
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.times
 import com.nhaarman.mockitokotlin2.verify
@@ -22,12 +25,12 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 import org.mockito.Captor
-import org.mockito.Mock
 
 @RunWith(JUnit4::class)
 class GetCurrenciesViewModelTest {
 
     private lateinit var getCurrencies: GetCurrencies
+    private lateinit var updateExchangeRate: UpdateExchangeRate
     private lateinit var currencyViewMapper: CurrencyViewMapper
     private lateinit var getCurrenciesViewModel: GetCurrenciesViewModel
 
@@ -41,13 +44,15 @@ class GetCurrenciesViewModelTest {
     fun setup() {
         captor = argumentCaptor<DisposableSubscriber<List<Currency>>>()
         getCurrencies = mock()
+        updateExchangeRate = mock()
         currencyViewMapper = mock()
-        getCurrenciesViewModel = GetCurrenciesViewModel(getCurrencies, currencyViewMapper)
+        getCurrenciesViewModel =
+                GetCurrenciesViewModel(getCurrencies, updateExchangeRate, currencyViewMapper)
     }
 
     @Test
     fun initViewModelCallsUseCase() {
-        verify(getCurrencies, times(1)).execute(any())
+        verify(getCurrencies, times(1)).execute(any(), anyOrNull(), anyOrNull())
     }
 
     @Test
@@ -60,20 +65,45 @@ class GetCurrenciesViewModelTest {
             whenever(currencyViewMapper.mapToView(it)).thenReturn(currencyViewList[index])
         }
 
-        verify(getCurrencies).execute(captor.capture())
+        verify(getCurrencies).execute(captor.capture(), eq(1f), anyOrNull())
         captor.firstValue.onNext(currencyList)
 
-        assertThat(getCurrenciesViewModel.getCurrencies().value?.currencies).isEqualTo(
+        assertThat(getCurrenciesViewModel.getCurrencies(1f).value?.currencies).isEqualTo(
             currenciesViewModel.currencies
         )
     }
 
     @Test
     fun initEmptyDataWhenError() {
-        verify(getCurrencies).execute(captor.capture())
+        verify(getCurrencies).execute(captor.capture(), eq(1f), anyOrNull())
         captor.firstValue.onError(RuntimeException())
 
-        assertThat(getCurrenciesViewModel.getCurrencies().value?.currencies).isEmpty()
+        assertThat(getCurrenciesViewModel.getCurrencies(1f).value?.currencies).isEmpty()
+    }
+
+    @Test
+    fun updateCurrenciesRateReturnsCorrectData() {
+        val currencyList = createCurrencyList()
+        val currencyViewList = createCurrencyViewList()
+        val currenciesViewModel = createCurrenciesViewModel(currencyViewList)
+        val currencyWithBaseRate = createCurrencyListWithBaseRate()
+
+        currencyList.forEachIndexed { index, it ->
+            whenever(currencyViewMapper.mapToView(it)).thenReturn(currencyViewList[index])
+        }
+
+        currenciesViewModel.currencies.forEachIndexed { index, it ->
+            whenever(currencyViewMapper.mapFromView(it, 1f)).thenReturn(currencyWithBaseRate[index])
+        }
+
+        verify(getCurrencies).execute(captor.capture(), eq(1f), anyOrNull())
+        captor.firstValue.onNext(currencyList)
+        assertThat(getCurrenciesViewModel.getCurrencies(1f).value?.currencies).isEqualTo(
+            currenciesViewModel.currencies
+        )
+
+        getCurrenciesViewModel.updateCurrenciesRate(2.3456f)
+        verify(updateExchangeRate).execute(captor.capture(), eq(2.3456f), eq(currencyWithBaseRate))
     }
 
     private fun createCurrencyViewList(): List<CurrencyView> {
@@ -83,10 +113,17 @@ class GetCurrenciesViewModelTest {
         return currencyViewList
     }
 
+    private fun createCurrencyListWithBaseRate(): List<Currency> {
+        val currencyEntityList = mutableListOf<Currency>()
+        currencyEntityList.add(Currency("EUR", 1.12345f * 2.3456f))
+        currencyEntityList.add(Currency("USD", 2.12345f * 2.3456f))
+        return currencyEntityList
+    }
+
     private fun createCurrencyList(): List<Currency> {
         val currencyEntityList = mutableListOf<Currency>()
-        currencyEntityList.add(com.marcosholgado.domain.model.Currency("EUR", 1.12345f))
-        currencyEntityList.add(com.marcosholgado.domain.model.Currency("USD", 2.12345f))
+        currencyEntityList.add(Currency("EUR", 1.12345f))
+        currencyEntityList.add(Currency("USD", 2.12345f))
         return currencyEntityList
     }
 

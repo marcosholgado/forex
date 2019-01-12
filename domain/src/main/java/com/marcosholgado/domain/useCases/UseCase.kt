@@ -8,7 +8,7 @@ import io.reactivex.schedulers.Schedulers
 import io.reactivex.subscribers.DisposableSubscriber
 
 
-abstract class UseCase<T> constructor(private val observeScheduler: Scheduler) {
+abstract class UseCase<T, in P, in O> constructor(private val observeScheduler: Scheduler) {
     private val disposables = CompositeDisposable()
 
     fun addDisposable(disposable: Disposable) {
@@ -19,12 +19,12 @@ abstract class UseCase<T> constructor(private val observeScheduler: Scheduler) {
         if (!disposables.isDisposed) disposables.dispose()
     }
 
-    open fun execute(observer: DisposableSubscriber<T>) {
-        val observable = this.createObservable()
+    open fun execute(observer: DisposableSubscriber<T>, param1: P? = null, param2: O?) {
+        val observable = this.createObservable(param1, param2)
             .subscribeOn(Schedulers.io())
             .observeOn(observeScheduler)
         addDisposable(observable.subscribeWith(observer))
     }
 
-    abstract fun createObservable(): Flowable<T>
+    abstract fun createObservable(param1: P? = null, param2: O? = null): Flowable<T>
 }
