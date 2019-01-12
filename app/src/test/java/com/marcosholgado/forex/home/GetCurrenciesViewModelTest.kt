@@ -27,9 +27,7 @@ import org.mockito.Mock
 @RunWith(JUnit4::class)
 class GetCurrenciesViewModelTest {
 
-    @Mock
     private lateinit var getCurrencies: GetCurrencies
-    @Mock
     private lateinit var currencyViewMapper: CurrencyViewMapper
     private lateinit var getCurrenciesViewModel: GetCurrenciesViewModel
 
