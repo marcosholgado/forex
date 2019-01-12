@@ -19,8 +19,8 @@ abstract class UseCase<T> constructor(private val observeScheduler: Scheduler) {
         if (!disposables.isDisposed) disposables.dispose()
     }
 
-    fun execute(observer: DisposableSubscriber<T>) {
-        val observable = createObservable()
+    open fun execute(observer: DisposableSubscriber<T>) {
+        val observable = this.createObservable()
             .subscribeOn(Schedulers.io())
             .observeOn(observeScheduler)
         addDisposable(observable.subscribeWith(observer))

@@ -5,7 +5,7 @@ import com.marcosholgado.forex.home.model.CurrencyView
 import javax.inject.Inject
 
 open class CurrencyViewMapper @Inject constructor() {
-    fun mapToView(currencyEntity: Currency): CurrencyView {
-        return CurrencyView(currencyEntity.currency, currencyEntity.rate)
+    open fun mapToView(currency: Currency): CurrencyView {
+        return CurrencyView(currency.currency, currency.rate)
     }
 }
