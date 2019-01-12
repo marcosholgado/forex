@@ -6,13 +6,7 @@ import javax.inject.Inject
 
 open class CurrencyMapper @Inject constructor() {
 
-    fun mapFromEntity(currency: CurrencyEntity): Currency {
+    open fun mapFromEntity(currency: CurrencyEntity): Currency {
         return Currency(currency.currency, currency.rate)
     }
-
-    fun mapToEntity(currency: Currency): CurrencyEntity {
-        return CurrencyEntity(currency.currency, currency.rate)
-    }
-
-
 }
