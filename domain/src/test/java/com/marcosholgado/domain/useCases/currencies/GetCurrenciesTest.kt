@@ -22,7 +22,7 @@ class GetCurrenciesTest {
     private lateinit var currencyRepository: CurrencyRepository
 
     @Before
-    fun setUp() {
+    fun setup() {
         scheduler = Schedulers.trampoline()
         currencyRepository = mock()
         getCurrencies = GetCurrencies(currencyRepository, scheduler)

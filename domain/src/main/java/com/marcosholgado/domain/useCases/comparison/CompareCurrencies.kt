@@ -1,5 +1,6 @@
 package com.marcosholgado.domain.useCases.comparison
 
+import androidx.annotation.VisibleForTesting
 import com.marcosholgado.domain.model.CurrencyDate
 import com.marcosholgado.domain.repository.CurrencyRepository
 import com.marcosholgado.domain.useCases.UseCase
@@ -25,13 +26,13 @@ open class CompareCurrencies @Inject constructor(
                     it.rates.forEach { cur ->
                         ratesMap[cur.key] = cur.value * (param1 ?: 1f)
                     }
-                    val currencyDate = CurrencyDate(it.date, ratesMap)
-                    currencyDate
+                    CurrencyDate(it.date, ratesMap)
                 }
         }
     }
 
-    private fun getDays(): List<String> {
+    @VisibleForTesting
+    open fun getDays(): List<String> {
         val daysList = mutableListOf<String>()
         val sdf = SimpleDateFormat(DATE_FORMAT, Locale.ENGLISH)
         val calendar = Calendar.getInstance()
