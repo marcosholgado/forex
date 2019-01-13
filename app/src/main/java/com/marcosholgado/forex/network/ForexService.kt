@@ -10,10 +10,13 @@ interface ForexService {
     @GET("latest?access_key=55b3d7ea41ece863950d0174813e0195")
     fun getCurrencies(@Query("base") base: String, @Query("symbols") symbols: String): Flowable<CurrenciesResponse>
 
-    class CurrenciesResponse(
+    data class CurrenciesResponse(
         val success: Boolean,
-        val base: String,
-        val rates: LinkedTreeMap<String, String>
+        val base: String?,
+        val rates: LinkedTreeMap<String, String>?,
+        val error: CurrencyError?
     )
+
+    data class CurrencyError(val info: String)
 
 }

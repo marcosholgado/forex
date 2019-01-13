@@ -5,17 +5,22 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
+import android.view.View
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.selection.SelectionPredicates
 import androidx.recyclerview.selection.SelectionTracker
 import androidx.recyclerview.selection.StorageStrategy
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.snackbar.Snackbar
 import com.marcosholgado.forex.di.ViewModelFactory
 import com.marcosholgado.forex.home.model.CurrenciesViewModel
 import com.marcosholgado.forex.home.model.CurrencyView
+import com.marcosholgado.forex.home.model.State
 import dagger.android.support.DaggerAppCompatActivity
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.view_empty.*
+import kotlinx.android.synthetic.main.view_error.*
 import javax.inject.Inject
 
 class MainActivity : DaggerAppCompatActivity() {
@@ -38,7 +43,7 @@ class MainActivity : DaggerAppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
-        getCurrenciesViewModel.getCurrencies(value.text.toString().toFloat())
+        getCurrenciesViewModel.getCurrencies()
             .observe(this, Observer {
             if (it != null) this.handleDataState(it)
         })
@@ -88,14 +93,47 @@ class MainActivity : DaggerAppCompatActivity() {
                 }
             }
         })
+        retry_empty_button.setOnClickListener { getCurrenciesViewModel.fetchCurrencies(value.text.toString().toFloat()) }
+        retry_error_button.setOnClickListener { getCurrenciesViewModel.fetchCurrencies(value.text.toString().toFloat()) }
     }
 
     private fun handleDataState(data: CurrenciesViewModel) {
-        updateListView(data.currencies)
+        when (data.state) {
+            State.SUCCESS -> updateListView(data.currencies)
+            State.LOADING -> showLoading()
+            State.ERROR -> showError(data)
+        }
+    }
+
+    private fun showLoading() {
+        view_error.visibility = View.GONE
+        view_empty.visibility = View.GONE
+        recyclerView.visibility = View.GONE
+        progress.visibility = View.VISIBLE
+    }
+
+    private fun showError(data: CurrenciesViewModel) {
+        progress.visibility = View.GONE
+        if (data.currencies.isEmpty()) {
+            view_error.visibility = View.VISIBLE
+            view_empty.visibility = View.GONE
+            text_error_message.text = data.message
+        } else {
+            updateListView(data.currencies)
+            data.message?.let { Snackbar.make(container, it, Snackbar.LENGTH_SHORT).show() }
+        }
     }
 
     private fun updateListView(currencies: List<CurrencyView>) {
-        currenciesAdapter.currencies = currencies.map { it }
-        currenciesAdapter.notifyDataSetChanged()
+        progress.visibility = View.GONE
+        view_error.visibility = View.GONE
+        recyclerView.visibility = View.VISIBLE
+        if (currencies.isEmpty()) {
+            view_empty.visibility = View.VISIBLE
+        } else {
+            view_empty.visibility = View.GONE
+            currenciesAdapter.currencies = currencies
+            currenciesAdapter.notifyDataSetChanged()
+        }
     }
 }

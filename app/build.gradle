@@ -55,6 +55,8 @@ dependencies {
     implementation "android.arch.lifecycle:extensions:1.1.1"
     implementation "android.arch.lifecycle:viewmodel:1.1.1"
 
+    implementation "com.google.android.material:material:1.1.0-alpha02"
+
     kapt "com.google.dagger:dagger-compiler:2.20"
     kapt "com.google.dagger:dagger-android-processor:2.20"
 

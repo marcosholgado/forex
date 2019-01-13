@@ -15,7 +15,12 @@ class RemoteRepositoryImp @Inject constructor(
         return forexService.getCurrencies("EUR", "USD,JPY,GBP,AUD,CAD,CHF,CNY,SEK,NZD")
             .map {
                 val currencies = mutableListOf<CurrencyEntity>()
-                it.rates.forEach { (key, value) ->
+
+                it.error?.let {
+                    error(it.info)
+                }
+
+                it.rates?.forEach { (key, value) ->
                     currencies.add(mapper.mapFromRemote(Pair(key, value)))
                 }
                 currencies

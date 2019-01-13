@@ -1,5 +1,6 @@
 package com.marcosholgado.forex.network
 
+import com.google.common.truth.Truth.assertThat
 import com.google.gson.internal.LinkedTreeMap
 import com.marcosholgado.data.model.CurrencyEntity
 import com.marcosholgado.forex.mapper.CurrencyEntityMapper
@@ -47,7 +48,7 @@ class RemoteRepositoryImpTest {
                 currencyEntityMapper.mapFromRemote(
                     Pair(
                         it.currency,
-                        responseCurrencyList[it.currency]!!
+                        responseCurrencyList!![it.currency]!!
                     )
                 )
             ).thenReturn(it)
@@ -60,13 +61,47 @@ class RemoteRepositoryImpTest {
         testObserver.assertValues(currencyEntityList)
     }
 
-    private fun createResponse(): ForexService.CurrenciesResponse {
+    @Test
+    fun getCurrenciesReturnsEmptyList() {
 
+        val response = createNullListResponse()
+        whenever(forexService.getCurrencies(anyString(), anyString()))
+            .thenReturn(Flowable.just(response))
+
+        val testObserver = remoteRepositoryImp.getCurrencies().test()
+        testObserver.assertValues(emptyList())
+    }
+
+    @Test
+    fun getCurrenciesReturnsError() {
+
+        val response = createErrorResponse()
+        whenever(forexService.getCurrencies(anyString(), anyString()))
+            .thenReturn(Flowable.just(response))
+
+        val testObserver = remoteRepositoryImp.getCurrencies().test()
+        assertThat(testObserver.errorCount()).isEqualTo(1)
+        testObserver.assertErrorMessage("this is an error")
+    }
+
+    private fun createResponse(): ForexService.CurrenciesResponse {
         val linkedTreeMap = LinkedTreeMap<String, String>()
         linkedTreeMap["USD"] = "1.12345"
         linkedTreeMap["CAD"] = "2.12345"
+        return ForexService.CurrenciesResponse(true, "EUR", linkedTreeMap, null)
+    }
 
-        return ForexService.CurrenciesResponse(true, "EUR", linkedTreeMap)
+    private fun createNullListResponse(): ForexService.CurrenciesResponse {
+        return ForexService.CurrenciesResponse(true, "EUR", null, null)
+    }
+
+    private fun createErrorResponse(): ForexService.CurrenciesResponse {
+        return ForexService.CurrenciesResponse(
+            true,
+            null,
+            null,
+            ForexService.CurrencyError("this is an error")
+        )
     }
 
     private fun createCurrencyEntityList(): List<CurrencyEntity> {

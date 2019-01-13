@@ -8,12 +8,14 @@ import com.marcosholgado.domain.model.Currency
 import com.marcosholgado.domain.useCases.currencies.UpdateExchangeRate
 import com.marcosholgado.forex.home.model.CurrenciesViewModel
 import com.marcosholgado.forex.home.model.CurrencyView
+import com.marcosholgado.forex.home.model.State
 import com.nhaarman.mockitokotlin2.KArgumentCaptor
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.anyOrNull
 import com.nhaarman.mockitokotlin2.argumentCaptor
 import com.nhaarman.mockitokotlin2.eq
 import com.nhaarman.mockitokotlin2.mock
+import com.nhaarman.mockitokotlin2.never
 import com.nhaarman.mockitokotlin2.times
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
@@ -56,7 +58,7 @@ class GetCurrenciesViewModelTest {
     }
 
     @Test
-    fun initReturnsDataNoError() {
+    fun initReturnsDataNoErrorNoMessage() {
         val currencyList = createCurrencyList()
         val currencyViewList = createCurrencyViewList()
         val currenciesViewModel = createCurrenciesViewModel(currencyViewList)
@@ -68,9 +70,12 @@ class GetCurrenciesViewModelTest {
         verify(getCurrencies).execute(captor.capture(), eq(1f), anyOrNull())
         captor.firstValue.onNext(currencyList)
 
-        assertThat(getCurrenciesViewModel.getCurrencies(1f).value?.currencies).isEqualTo(
+        assertThat(getCurrenciesViewModel.getCurrencies().value?.currencies).isEqualTo(
             currenciesViewModel.currencies
         )
+
+        assertThat(getCurrenciesViewModel.getCurrencies().value?.state).isEqualTo(State.SUCCESS)
+        assertThat(getCurrenciesViewModel.getCurrencies().value?.message).isNull()
     }
 
     @Test
@@ -78,7 +83,24 @@ class GetCurrenciesViewModelTest {
         verify(getCurrencies).execute(captor.capture(), eq(1f), anyOrNull())
         captor.firstValue.onError(RuntimeException())
 
-        assertThat(getCurrenciesViewModel.getCurrencies(1f).value?.currencies).isEmpty()
+        assertThat(getCurrenciesViewModel.getCurrencies().value?.currencies).isEmpty()
+        assertThat(getCurrenciesViewModel.getCurrencies().value?.state).isEqualTo(State.ERROR)
+    }
+
+    @Test
+    fun initLoadingState() {
+        assertThat(getCurrenciesViewModel.getCurrencies().value?.state).isEqualTo(State.LOADING)
+        assertThat(getCurrenciesViewModel.getCurrencies().value?.message).isNull()
+        assertThat(getCurrenciesViewModel.getCurrencies().value?.currencies).isEmpty()
+    }
+
+    @Test
+    fun returnsMessageWhenError() {
+        verify(getCurrencies).execute(captor.capture(), eq(1f), anyOrNull())
+        captor.firstValue.onError(RuntimeException("this is a test"))
+
+        assertThat(getCurrenciesViewModel.getCurrencies().value?.state).isEqualTo(State.ERROR)
+        assertThat(getCurrenciesViewModel.getCurrencies().value?.message).isEqualTo("this is a test")
     }
 
     @Test
@@ -98,12 +120,18 @@ class GetCurrenciesViewModelTest {
 
         verify(getCurrencies).execute(captor.capture(), eq(1f), anyOrNull())
         captor.firstValue.onNext(currencyList)
-        assertThat(getCurrenciesViewModel.getCurrencies(1f).value?.currencies).isEqualTo(
+        assertThat(getCurrenciesViewModel.getCurrencies().value?.currencies).isEqualTo(
             currenciesViewModel.currencies
         )
 
         getCurrenciesViewModel.updateCurrenciesRate(2.3456f)
         verify(updateExchangeRate).execute(captor.capture(), eq(2.3456f), eq(currencyWithBaseRate))
+    }
+
+    @Test
+    fun updateCurrenciesRateEmptyList() {
+        getCurrenciesViewModel.updateCurrenciesRate(1f)
+        verify(updateExchangeRate, never()).execute(captor.capture(), eq(1f), any())
     }
 
     private fun createCurrencyViewList(): List<CurrencyView> {
@@ -128,6 +156,6 @@ class GetCurrenciesViewModelTest {
     }
 
     private fun createCurrenciesViewModel(currencyViewList: List<CurrencyView>): CurrenciesViewModel {
-        return CurrenciesViewModel(null, currencyViewList)
+        return CurrenciesViewModel(null, currencyViewList, State.SUCCESS)
     }
 }
