@@ -10,7 +10,7 @@ https://antonioleiva.com/clean-architecture-android/
 
 https://fernandocejas.com/2018/05/07/architecting-android-reloaded/
 
-Each layer has its own models that we have to map to move them from layer to another, this allows us to be able to switch to different data sources or add new logic with ease.
+Each layer has its own models that we have to map to move them from layer to another, this allows us to be able to switch to different data sources or add new logic with ease. Also by modularizing the codebase we get lower build times.
 The architecture consists of 3 layers: domain, data, ui. The only module with Android dependencies is the ui module (aka our app). This allows us to easily unit test all the business logic and different implementations of the interfaces in a simple way.
 
 ### Domain
