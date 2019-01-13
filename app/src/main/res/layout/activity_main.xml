@@ -9,9 +9,9 @@
 
     <TextView
         android:id="@+id/currency"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_marginEnd="40dp"
+        android:layout_width="@dimen/currency_text_size"
+        android:layout_height="@dimen/currency_text_size"
+        android:layout_marginEnd="@dimen/currency_text_margin"
         android:background="@color/colorPrimaryDark"
         android:gravity="center"
         android:textColor="@android:color/white"
@@ -24,20 +24,20 @@
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="@dimen/main_margin_top"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/currency" />
 
     <EditText
         android:id="@+id/value"
         android:layout_width="wrap_content"
-        android:layout_height="50dp"
-        android:layout_marginTop="10dp"
+        android:layout_height="@dimen/currency_text_size"
+        android:layout_marginTop="@dimen/main_margin_top"
         android:background="@drawable/input_background"
         android:ems="8"
         android:inputType="numberDecimal"
-        android:paddingStart="10dp"
-        android:paddingEnd="10dp"
+        android:paddingStart="@dimen/main_margin_top"
+        android:paddingEnd="@dimen/main_margin_top"
         android:text="@string/default_rate"
         app:layout_constraintRight_toLeftOf="@id/currency"
         app:layout_constraintTop_toTopOf="parent"

@@ -10,13 +10,13 @@
     <TextView
         android:id="@+id/value"
         android:layout_width="wrap_content"
-        android:layout_height="50dp"
-        android:layout_marginStart="40dp"
-        android:layout_marginTop="10dp"
+        android:layout_height="@dimen/comparison_value_height"
+        android:layout_marginStart="@dimen/comparison_value_margin_start"
+        android:layout_marginTop="@dimen/comparison_value_margin_top"
         android:background="@color/colorPrimaryDark"
         android:gravity="center"
-        android:paddingStart="10dp"
-        android:paddingEnd="10dp"
+        android:paddingStart="@dimen/comparison_value_padding"
+        android:paddingEnd="@dimen/comparison_value_padding"
         android:textColor="@android:color/white"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
@@ -26,7 +26,7 @@
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="@dimen/comparison_recycler_margin"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/value" />
 

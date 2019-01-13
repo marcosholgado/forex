@@ -3,4 +3,6 @@
     <string name="title_activity_comparison">Historic 5 days</string>
     <string name="last_5_days">%1$s %2$s</string>
     <string name="default_rate">1</string>
+    <string name="no_available_results">No available results</string>
+    <string name="retry">Retry</string>
 </resources>

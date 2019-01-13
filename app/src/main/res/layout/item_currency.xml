@@ -2,9 +2,9 @@
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="40dp"
-    android:layout_margin="3dp"
-    android:elevation="5dp">
+    android:layout_height="@dimen/card_height"
+    android:layout_margin="@dimen/card_margin"
+    android:elevation="@dimen/elevation">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -16,8 +16,8 @@
             android:id="@+id/currency"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_marginStart="50dp"
-            android:layout_marginTop="4dp"
+            android:layout_marginStart="@dimen/card_currency_margin_start"
+            android:layout_marginTop="@dimen/card_currency_margin_top"
             android:gravity="center"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
@@ -27,9 +27,9 @@
             android:id="@+id/rate"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_marginStart="40dp"
-            android:layout_marginTop="4dp"
-            android:layout_marginEnd="8dp"
+            android:layout_marginStart="@dimen/card_currency_margin_start"
+            android:layout_marginTop="@dimen/card_currency_margin_top"
+            android:layout_marginEnd="@dimen/card_currency_margin_end"
             android:gravity="center_vertical|start"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.493"
