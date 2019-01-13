@@ -14,9 +14,16 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
+
+        debug {
+            // Api Key should be an ENV variable in CI
+            buildConfigField "String", "API_KEY", "\"55b3d7ea41ece863950d0174813e0195\""
+        }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            // Api Key should be an ENV variable in CI
+            buildConfigField "String", "API_KEY", "\"55b3d7ea41ece863950d0174813e0195\""
         }
     }
     compileOptions {
