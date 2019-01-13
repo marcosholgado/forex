@@ -46,6 +46,7 @@ class ComparisonActivity : DaggerAppCompatActivity() {
 
         setupModelView()
         setupView()
+        setupListeners()
     }
 
     override fun onStart() {
@@ -74,6 +75,11 @@ class ComparisonActivity : DaggerAppCompatActivity() {
         recyclerView.adapter = adapter
         val symbolsList = symbols.split(",")
         adapter.addHeader(CurrencyDateHeaderView("Date", symbolsList.first(), symbolsList.last()))
+    }
+
+    private fun setupListeners() {
+        retry_empty_button.setOnClickListener { comparisonCurrenciesViewModel.fetchCurrencies() }
+        retry_error_button.setOnClickListener { comparisonCurrenciesViewModel.fetchCurrencies() }
     }
 
     private fun handleDataState(data: CompareCurrenciesViewModel) {
