@@ -1,4 +1,4 @@
-package com.marcosholgado.forex.mapper
+package com.marcosholgado.forex.home.mapper
 
 import com.google.common.truth.Truth.assertThat
 import com.marcosholgado.domain.model.Currency

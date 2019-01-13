@@ -4,19 +4,20 @@ import com.marcosholgado.forex.R
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.View
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.selection.Selection
 import androidx.recyclerview.selection.SelectionPredicates
 import androidx.recyclerview.selection.SelectionTracker
 import androidx.recyclerview.selection.StorageStrategy
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
+import com.marcosholgado.forex.common.State
 import com.marcosholgado.forex.di.ViewModelFactory
 import com.marcosholgado.forex.home.model.CurrenciesViewModel
 import com.marcosholgado.forex.home.model.CurrencyView
-import com.marcosholgado.forex.home.model.State
+import com.marcosholgado.forex.navigation.Navigator
 import dagger.android.support.DaggerAppCompatActivity
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.view_empty.*
@@ -29,28 +30,44 @@ class MainActivity : DaggerAppCompatActivity() {
     lateinit var viewModelFactory: ViewModelFactory
     @Inject
     lateinit var currenciesAdapter: CurrenciesAdapter
+    @Inject
+    lateinit var navigator: Navigator
 
     private lateinit var getCurrenciesViewModel: GetCurrenciesViewModel
-    private lateinit var tracker: SelectionTracker<Long>
+    private var tracker: SelectionTracker<Long>? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        savedInstanceState?.let {
+            tracker?.onRestoreInstanceState(savedInstanceState)
+        }
+
         getCurrenciesViewModel = ViewModelProviders.of(this, viewModelFactory)
             .get(GetCurrenciesViewModel::class.java)
-    }
 
-    override fun onStart() {
-        super.onStart()
         getCurrenciesViewModel.getCurrencies()
             .observe(this, Observer {
-            if (it != null) this.handleDataState(it)
-        })
+                if (it != null) this.handleDataState(it)
+            })
 
         setupListeners()
         setupAdapter()
         setupTracker()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        tracker?.clearSelection()
+    }
+
+    override fun onSaveInstanceState(onSaveInstanceState: Bundle?) {
+        super.onSaveInstanceState(onSaveInstanceState)
+
+        onSaveInstanceState?.let {
+            tracker?.onSaveInstanceState(it)
+        }
     }
 
     private fun setupAdapter() {
@@ -68,17 +85,24 @@ class MainActivity : DaggerAppCompatActivity() {
         ).withSelectionPredicate(
             SelectionPredicates.createSelectAnything()
         ).build()
-
-        tracker.addObserver(
+        tracker?.addObserver(
             object : SelectionTracker.SelectionObserver<Long>() {
                 override fun onSelectionChanged() {
-                    val nItems: Int? = tracker.selection.size()
+                    super.onSelectionChanged()
+                    val nItems: Int? = tracker?.selection!!.size()
                     if (nItems == 2) {
-                        Log.d("TEST", "2 items selected!")
+                        launchComparison(tracker?.selection!!)
                     }
                 }
             })
         currenciesAdapter.setTracker(tracker)
+    }
+
+    private fun launchComparison(selection: Selection<Long>) {
+        val symbols = selection.map {
+            currenciesAdapter.currencies[it.toInt()].name
+        }.joinToString(",")
+        navigator.openComparisonActivity(this, value.text.toString().toFloat(), symbols)
     }
 
     private fun setupListeners() {

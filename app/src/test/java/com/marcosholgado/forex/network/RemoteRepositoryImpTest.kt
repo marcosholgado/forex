@@ -3,6 +3,7 @@ package com.marcosholgado.forex.network
 import com.google.common.truth.Truth.assertThat
 import com.google.gson.internal.LinkedTreeMap
 import com.marcosholgado.data.model.CurrencyEntity
+import com.marcosholgado.forex.mapper.CurrencyDateEntityMapper
 import com.marcosholgado.forex.mapper.CurrencyEntityMapper
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.whenever
@@ -17,14 +18,17 @@ import org.mockito.ArgumentMatchers.anyString
 class RemoteRepositoryImpTest {
 
     private lateinit var currencyEntityMapper: CurrencyEntityMapper
+    private lateinit var currencyDateEntityMapper: CurrencyDateEntityMapper
     private lateinit var forexService: ForexService
     private lateinit var remoteRepositoryImp: RemoteRepositoryImp
 
     @Before
     fun setup() {
         currencyEntityMapper = mock()
+        currencyDateEntityMapper = mock()
         forexService = mock()
-        remoteRepositoryImp = RemoteRepositoryImp(currencyEntityMapper, forexService)
+        remoteRepositoryImp =
+                RemoteRepositoryImp(currencyEntityMapper, currencyDateEntityMapper, forexService)
     }
 
     @Test

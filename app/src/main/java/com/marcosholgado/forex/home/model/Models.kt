@@ -1,5 +1,7 @@
 package com.marcosholgado.forex.home.model
 
+import com.marcosholgado.forex.common.State
+
 class CurrenciesViewModel(
     val baseCurrency: CurrencyView?,
     val currencies: List<CurrencyView> = emptyList(),
@@ -8,7 +10,3 @@ class CurrenciesViewModel(
 )
 
 class CurrencyView(val name: String, val rate: Float)
-
-enum class State {
-    LOADING, SUCCESS, ERROR
-}

@@ -6,9 +6,9 @@ import androidx.lifecycle.ViewModel
 import com.marcosholgado.domain.model.Currency
 import com.marcosholgado.domain.useCases.currencies.GetCurrencies
 import com.marcosholgado.domain.useCases.currencies.UpdateExchangeRate
+import com.marcosholgado.forex.common.State
 import com.marcosholgado.forex.home.model.CurrenciesViewModel
-import com.marcosholgado.forex.home.model.State
-import com.marcosholgado.forex.mapper.CurrencyViewMapper
+import com.marcosholgado.forex.home.mapper.CurrencyViewMapper
 import io.reactivex.subscribers.DisposableSubscriber
 import javax.inject.Inject
 

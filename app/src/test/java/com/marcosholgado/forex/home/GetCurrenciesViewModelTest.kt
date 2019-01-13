@@ -3,12 +3,12 @@ package com.marcosholgado.forex.home
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.google.common.truth.Truth.assertThat
 import com.marcosholgado.domain.useCases.currencies.GetCurrencies
-import com.marcosholgado.forex.mapper.CurrencyViewMapper
+import com.marcosholgado.forex.home.mapper.CurrencyViewMapper
 import com.marcosholgado.domain.model.Currency
 import com.marcosholgado.domain.useCases.currencies.UpdateExchangeRate
+import com.marcosholgado.forex.common.State
 import com.marcosholgado.forex.home.model.CurrenciesViewModel
 import com.marcosholgado.forex.home.model.CurrencyView
-import com.marcosholgado.forex.home.model.State
 import com.nhaarman.mockitokotlin2.KArgumentCaptor
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.anyOrNull
