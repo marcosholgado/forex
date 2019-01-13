@@ -1,6 +1,6 @@
 package com.marcosholgado.forex.mapper
 
-import com.google.common.truth.Truth
+import com.google.common.truth.Truth.assertThat
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
@@ -14,7 +14,7 @@ class CurrencyEntityMapperTest {
         val currency = Pair("EUR", "1.12345")
         val currencyEntity = mapperTest.mapFromRemote(currency)
 
-        Truth.assertThat(currencyEntity.currency).isEqualTo(currency.first)
-        Truth.assertThat(currencyEntity.rate).isEqualTo(currency.second.toFloat())
+        assertThat(currencyEntity.currency).isEqualTo(currency.first)
+        assertThat(currencyEntity.rate).isEqualTo(currency.second.toFloat())
     }
 }
