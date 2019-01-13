@@ -16,8 +16,6 @@ abstract class ThreadModule {
     companion object {
         @Provides
         @JvmStatic
-        fun provideMainThread(): Scheduler {
-            return AndroidSchedulers.mainThread()
-        }
+        fun provideMainThread(): Scheduler = AndroidSchedulers.mainThread()
     }
 }

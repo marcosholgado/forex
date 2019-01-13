@@ -17,22 +17,16 @@ abstract class NetworkModule {
     companion object {
         @Provides
         @JvmStatic
-        fun provideForexService(): ForexService {
-            return ForexServiceFactory.createForexService()
-        }
+        fun provideForexService(): ForexService = ForexServiceFactory.createForexService()
 
         @Provides
         @JvmStatic
         @Named("base")
-        fun provideBaseCurrency(): String {
-            return "EUR"
-        }
+        fun provideBaseCurrency(): String = "EUR"
 
         @Provides
         @JvmStatic
         @Named("currencies")
-        fun provideCurrencies(): String {
-            return "USD,JPY,GBP,AUD,CAD,CHF,CNY,SEK,NZD"
-        }
+        fun provideCurrencies(): String = "USD,JPY,GBP,AUD,CAD,CHF,CNY,SEK,NZD"
     }
 }
