@@ -23,6 +23,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.view_empty.*
 import kotlinx.android.synthetic.main.view_error.*
 import javax.inject.Inject
+import javax.inject.Named
 
 class MainActivity : DaggerAppCompatActivity() {
 
@@ -32,6 +33,8 @@ class MainActivity : DaggerAppCompatActivity() {
     lateinit var currenciesAdapter: CurrenciesAdapter
     @Inject
     lateinit var navigator: Navigator
+    @field:[Inject Named("base")]
+    lateinit var base: String
 
     private lateinit var getCurrenciesViewModel: GetCurrenciesViewModel
     private var tracker: SelectionTracker<Long>? = null
@@ -52,6 +55,7 @@ class MainActivity : DaggerAppCompatActivity() {
                 if (it != null) this.handleDataState(it)
             })
 
+        setupUI()
         setupListeners()
         setupAdapter()
         setupTracker()
@@ -68,6 +72,10 @@ class MainActivity : DaggerAppCompatActivity() {
         onSaveInstanceState?.let {
             tracker?.onSaveInstanceState(it)
         }
+    }
+
+    private fun setupUI() {
+        currency.text = base
     }
 
     private fun setupAdapter() {

@@ -18,14 +18,16 @@ import kotlinx.android.synthetic.main.view_empty.*
 import kotlinx.android.synthetic.main.view_error.*
 import java.text.DecimalFormat
 import javax.inject.Inject
+import javax.inject.Named
 
 class ComparisonActivity : DaggerAppCompatActivity() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
-
     @Inject
     lateinit var adapter: ComparisonAdapter
+    @field:[Inject Named("base")]
+    lateinit var base: String
 
     private lateinit var comparisonCurrenciesViewModel: ComparisonCurrenciesViewModel
     private lateinit var symbols: String
@@ -58,7 +60,7 @@ class ComparisonActivity : DaggerAppCompatActivity() {
 
     private fun setupView() {
         val format = DecimalFormat("0.#")
-        value.text = getString(R.string.last_5_days, format.format(baseRate))
+        value.text = getString(R.string.last_5_days, format.format(baseRate), base)
     }
 
     private fun setupModelView() {

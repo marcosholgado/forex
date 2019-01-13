@@ -9,12 +9,13 @@ import com.marcosholgado.forex.common.State
 import com.marcosholgado.forex.comparison.mapper.CurrencyDateViewMapper
 import com.marcosholgado.forex.comparison.model.CompareCurrenciesViewModel
 import io.reactivex.subscribers.DisposableSubscriber
-import java.text.DateFormatSymbols
 import javax.inject.Inject
+import javax.inject.Named
 
 class ComparisonCurrenciesViewModel @Inject internal constructor(
     private val compareCurrencies: CompareCurrencies,
-    private val mapper: CurrencyDateViewMapper
+    private val mapper: CurrencyDateViewMapper,
+    @Named("base") private val base: String
 ) : ViewModel() {
 
     private val currenciesLiveData: MutableLiveData<CompareCurrenciesViewModel> = MutableLiveData()
@@ -31,7 +32,7 @@ class ComparisonCurrenciesViewModel @Inject internal constructor(
     }
 
     fun fetchCurrencies() {
-        currenciesLiveData.postValue(CompareCurrenciesViewModel("EUR", null, State.LOADING))
+        currenciesLiveData.postValue(CompareCurrenciesViewModel(base, null, State.LOADING))
         return compareCurrencies.execute(CurrenciesSubscriber(), baseRate, this.symbols)
     }
 
@@ -44,7 +45,7 @@ class ComparisonCurrenciesViewModel @Inject internal constructor(
         override fun onNext(t: CurrencyDate) {
             currenciesLiveData.postValue(
                 CompareCurrenciesViewModel(
-                    "EUR",
+                    base,
                     mapper.mapToView(t)
                     , State.SUCCESS
                 )
@@ -55,7 +56,7 @@ class ComparisonCurrenciesViewModel @Inject internal constructor(
             val currenciesViewModel = currenciesLiveData.value
             currenciesLiveData.postValue(
                 CompareCurrenciesViewModel(
-                    "EUR",
+                    base,
                     currenciesViewModel!!.currencies,
                     State.ERROR,
                     exception.message

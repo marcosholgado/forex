@@ -23,6 +23,7 @@ class RemoteRepositoryImpTest {
     private lateinit var currencyDateEntityMapper: CurrencyDateEntityMapper
     private lateinit var forexService: ForexService
     private lateinit var remoteRepositoryImp: RemoteRepositoryImp
+    private val string: String = "test"
 
     @Before
     fun setup() {
@@ -30,7 +31,13 @@ class RemoteRepositoryImpTest {
         currencyDateEntityMapper = mock()
         forexService = mock()
         remoteRepositoryImp =
-                RemoteRepositoryImp(currencyEntityMapper, currencyDateEntityMapper, forexService)
+                RemoteRepositoryImp(
+                    currencyEntityMapper,
+                    currencyDateEntityMapper,
+                    forexService,
+                    string,
+                    string
+                )
     }
 
     @Test
